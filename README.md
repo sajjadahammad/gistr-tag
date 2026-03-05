@@ -271,6 +271,63 @@ npm run build
 npm run start:prod
 ```
 
+## Seed Data Generation
+
+The seed script (`src/seed/seed.ts`) populates the database with realistic test data for development and testing.
+
+### Approach
+
+The seed data was generated using AI assistance (ChatGPT) with the following prompt:
+
+> "Generate realistic seed data for a knowledge management system with the following structure:
+> - 10 sources (YouTube-style content with title, URL, description)
+> - 8 snippets (user highlights from sources)
+> - 6 AI responses (generated answers)
+> - Tags with hierarchical relationships (parent-child)
+> - Tag attachments from both system and user sources
+> 
+> Ensure data is realistic, diverse, and demonstrates the polymorphic tagging system."
+
+### Manual Adjustments
+
+The following adjustments were made to the AI-generated data:
+
+1. **Tag hierarchy structure** — Organized tags into meaningful parent-child relationships:
+   - `database` → parent for `mongodb`, `postgresql`, `redis`
+   - `backend` → parent for `nodejs`, `python`, `java`
+   - `frontend` → parent for `javascript`, `react`, `vue`
+
+2. **Dual-origin tagging** — Ensured realistic mix of tag sources:
+   - System-generated tags (simulating YouTube API extraction): 60% of attachments
+   - User-added tags: 40% of attachments
+
+3. **Tag distribution** — Adjusted tag counts to demonstrate:
+   - Approved tags (usageCount ≥ 3): core technical tags
+   - Unapproved tags (usageCount < 3): emerging or niche tags
+   - Realistic usage patterns across entity types
+
+4. **Entity metadata** — Enhanced with realistic details:
+   - Sources: Added publication dates, view counts, channel names
+   - Snippets: Added context about which source they came from
+   - AI Responses: Added confidence scores and generation timestamps
+
+5. **Timestamp distribution** — Spread creation dates across 30 days to enable meaningful analytics queries
+
+### Running the Seed Script
+
+```bash
+npm run seed
+```
+
+This will:
+1. Connect to MongoDB (using MONGODB_URI from .env or localhost default)
+2. Clear existing data (optional, can be modified)
+3. Create all schemas with indexes
+4. Insert seed documents
+5. Display summary of inserted data
+
+The seed data is idempotent — running it multiple times won't create duplicates due to unique indexes on tags and tag attachments.
+
 ## Environment Variables
 
 Create a `.env` file based on `.env.example`:
